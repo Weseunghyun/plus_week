@@ -13,6 +13,9 @@ import java.util.Optional;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
+    @Query("select r from Reservation r join fetch r.user u join fetch r.item i")
+    List<Reservation> findAllWithUserAndItem();
+
     List<Reservation> findByUserIdAndItemId(Long userId, Long itemId);
 
     List<Reservation> findByUserId(Long userId);
