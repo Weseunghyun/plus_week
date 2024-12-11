@@ -25,8 +25,8 @@ public class UserRoleInterceptor implements HandlerInterceptor {
         Authentication authentication = (Authentication) session.getAttribute(GlobalConstants.USER_AUTH);
         Role role = authentication.getRole();
 
-        if (role != Role.USER) {
-            throw new UnauthorizedException(HttpStatus.UNAUTHORIZED, "user 권한이 필요합니다.");
+        if (role != Role.ADMIN) {
+            throw new UnauthorizedException(HttpStatus.UNAUTHORIZED, "ADMIN 권한이 필요합니다.");
         }
 
         return true;
