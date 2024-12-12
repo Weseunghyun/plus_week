@@ -25,7 +25,7 @@ public class Item {
     private User manager;
 
     @Column(nullable = false, columnDefinition = "varchar(20) default 'PENDING'")
-    private String status;
+    private String status="PENDING";
 
     public Item(String name, String description, User manager, User owner) {
         this.name = name;
