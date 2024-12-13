@@ -8,6 +8,7 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.ReservationConflictException;
 import com.example.demo.repository.ItemRepository;
 import com.example.demo.repository.ReservationRepository;
+import com.example.demo.repository.SearchReservationsQueryRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,25 +24,28 @@ public class ReservationService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final RentalLogService rentalLogService;
+    private final SearchReservationsQueryRepository searchReservationsQueryRepository;
 
     public ReservationService(ReservationRepository reservationRepository,
                               ItemRepository itemRepository,
                               UserRepository userRepository,
-                              RentalLogService rentalLogService) {
+                              RentalLogService rentalLogService,
+        SearchReservationsQueryRepository searchReservationsQueryRepository) {
         this.reservationRepository = reservationRepository;
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.rentalLogService = rentalLogService;
+        this.searchReservationsQueryRepository = searchReservationsQueryRepository;
     }
 
     // TODO: 1. 트랜잭션 이해
     @Transactional
     public void createReservation(Long itemId, Long userId, LocalDateTime startAt, LocalDateTime endAt) {
         // 쉽게 데이터를 생성하려면 아래 유효성검사 주석 처리
-//        List<Reservation> haveReservations = reservationRepository.findConflictingReservations(itemId, startAt, endAt);
-//        if(!haveReservations.isEmpty()) {
-//            throw new ReservationConflictException("해당 물건은 이미 그 시간에 예약이 있습니다.");
-//        }
+        List<Reservation> haveReservations = reservationRepository.findConflictingReservations(itemId, startAt, endAt);
+        if(!haveReservations.isEmpty()) {
+            throw new ReservationConflictException("해당 물건은 이미 그 시간에 예약이 있습니다.");
+        }
 
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new IllegalArgumentException("해당 ID에 맞는 값이 존재하지 않습니다."));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 ID에 맞는 값이 존재하지 않습니다."));
@@ -54,24 +58,27 @@ public class ReservationService {
 
     // TODO: 3. N+1 문제
     public List<ReservationResponseDto> getReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
+        List<Reservation> reservations = reservationRepository.findAllWithUserAndItem();
 
-        return reservations.stream().map(reservation ->
-            new ReservationResponseDto(
+        return reservations.stream().map(reservation -> {
+            User user = reservation.getUser();
+            Item item = reservation.getItem();
+
+            return new ReservationResponseDto(
                 reservation.getId(),
-                reservation.getUser().getNickname(),
-                reservation.getItem().getName(),
+                user.getNickname(),
+                item.getName(),
                 reservation.getStartAt(),
                 reservation.getEndAt()
-            )
-        ).toList();
+            );
+        }).toList();
 
     }
 
     // TODO: 5. QueryDSL 검색 개선
     public List<ReservationResponseDto> searchAndConvertReservations(Long userId, Long itemId) {
 
-        List<Reservation> reservations = searchReservations(userId, itemId);
+        List<Reservation> reservations = searchReservationsQueryRepository.searchReservations(userId, itemId);
 
         return convertToDto(reservations);
     }
