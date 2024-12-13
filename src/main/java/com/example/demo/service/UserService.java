@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.Authentication;
 import com.example.demo.dto.LoginRequestDto;
 import com.example.demo.dto.UserRequestDto;
+import com.example.demo.dto.UserResponseDto;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.PasswordEncoder;
@@ -21,11 +22,17 @@ public class UserService {
     }
 
     @Transactional
-    public void signupWithEmail(UserRequestDto userRequestDto) {
+    public UserResponseDto signupWithEmail(UserRequestDto userRequestDto) {
         String encodedPassword = PasswordEncoder.encode(userRequestDto.getPassword());
         userRequestDto.updatePassword(encodedPassword);
 
-        userRepository.save(userRequestDto.toEntity());
+        User savedUser = userRepository.save(userRequestDto.toEntity());
+
+        return new UserResponseDto(
+            savedUser.getEmail(),
+            savedUser.getNickname(),
+            savedUser.getRole().getName()
+        );
     }
 
     public Authentication loginUser(LoginRequestDto loginRequestDto) {

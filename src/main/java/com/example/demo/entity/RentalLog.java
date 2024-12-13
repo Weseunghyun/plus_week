@@ -12,13 +12,14 @@ public class RentalLog {
 
     private String logMessage;
 
-    private String logType; // SUCCESS, FAILURE
+    @Enumerated(EnumType.STRING)
+    private LogType logType; // SUCCESS, FAILURE
 
     @ManyToOne
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
-    public RentalLog(Reservation reservation, String logMessage, String logType) {
+    public RentalLog(Reservation reservation, String logMessage, LogType logType) {
         this.reservation = reservation;
         this.logMessage = logMessage;
         this.logType = logType;

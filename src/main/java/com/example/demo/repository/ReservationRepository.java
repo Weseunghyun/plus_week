@@ -20,11 +20,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @EntityGraph(attributePaths = {"user", "item"})
     List<Reservation> findAll();
 
-    List<Reservation> findByUserIdAndItemId(Long userId, Long itemId);
-
-    List<Reservation> findByUserId(Long userId);
-
-    List<Reservation> findByItemId(Long itemId);
+    default Reservation findByIdOrElseThrow(Long id) {
+        return findById(id).orElseThrow(
+            () -> new IllegalStateException("존재하지 않는 예약입니다")
+        );
+    }
 
     @Query("SELECT r FROM Reservation r " +
             "WHERE r.item.id = :id " +
