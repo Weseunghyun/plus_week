@@ -4,7 +4,6 @@ import com.example.demo.entity.QItem;
 import com.example.demo.entity.QReservation;
 import com.example.demo.entity.QUser;
 import com.example.demo.entity.Reservation;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
