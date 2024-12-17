@@ -32,7 +32,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginWithEmail(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
+    public ResponseEntity<String> loginWithEmail(
+        @RequestBody LoginRequestDto loginRequestDto,
+        HttpServletRequest request
+    ) {
         Authentication authentication = userService.loginUser(loginRequestDto);
         HttpSession session = request.getSession();
         session.setAttribute(GlobalConstants.USER_AUTH, authentication);

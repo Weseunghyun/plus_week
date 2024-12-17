@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
+
     private final ReservationService reservationService;
 
     public ReservationController(ReservationService reservationService) {
@@ -32,8 +33,12 @@ public class ReservationController {
     }
 
     @PatchMapping("/{id}/update-status")
-    public void updateReservation(@PathVariable Long id, @RequestBody String status) {
-        reservationService.updateReservationStatus(id, status);
+    public ResponseEntity<ReservationResponseDto> updateReservation(
+        @PathVariable Long id,
+        @RequestBody String status
+    ) {
+        return new ResponseEntity<>(reservationService.updateReservationStatus(id, status),
+            HttpStatus.OK);
     }
 
     @GetMapping
@@ -42,10 +47,12 @@ public class ReservationController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ReservationResponseDto>> searchAll(@RequestParam(required = false) Long userId,
-                          @RequestParam(required = false) Long itemId) {
+    public ResponseEntity<List<ReservationResponseDto>> searchAll(
+        @RequestParam(required = false) Long userId,
+        @RequestParam(required = false) Long itemId
+    ) {
         return new ResponseEntity<>(
-            reservationService.searchAndConvertReservations(userId, itemId),HttpStatus.OK
+            reservationService.searchAndConvertReservations(userId, itemId), HttpStatus.OK
         );
     }
 }

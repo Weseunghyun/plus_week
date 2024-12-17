@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 
 
@@ -26,6 +27,7 @@ public class Item {
     @JoinColumn(name = "manager_id")
     private User manager;
 
+    @Setter
     @Column(nullable = false, columnDefinition = "varchar(20) default 'PENDING'")
     private String status;
 
