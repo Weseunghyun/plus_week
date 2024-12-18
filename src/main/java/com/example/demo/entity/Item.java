@@ -8,7 +8,6 @@ import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
-@DynamicInsert
 // TODO: 6. Dynamic Insert
 public class Item {
     @Id
@@ -36,6 +35,12 @@ public class Item {
         this.description = description;
         this.manager = manager;
         this.owner = owner;
+    }
+
+    //test only
+    public Item(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
     public Item() {}

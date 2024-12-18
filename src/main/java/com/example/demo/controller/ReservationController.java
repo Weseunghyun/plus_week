@@ -37,8 +37,10 @@ public class ReservationController {
         @PathVariable Long id,
         @RequestBody String status
     ) {
-        return new ResponseEntity<>(reservationService.updateReservationStatus(id, status),
-            HttpStatus.OK);
+        return new ResponseEntity<>(
+            reservationService.updateReservationStatus(id, status),
+            HttpStatus.OK
+        );
     }
 
     @GetMapping
