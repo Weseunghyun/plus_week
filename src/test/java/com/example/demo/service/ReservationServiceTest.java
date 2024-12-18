@@ -2,13 +2,11 @@ package com.example.demo.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.demo.dto.ReservationResponseDto;
 import com.example.demo.entity.Item;
-import com.example.demo.entity.LogType;
 import com.example.demo.entity.RentalLog;
 import com.example.demo.entity.Reservation;
 import com.example.demo.entity.ReservationStatus;
@@ -22,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
