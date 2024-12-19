@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco' // JaCoCo 플러그인 추가
 }
 
 group = 'com.sparta'
@@ -45,4 +46,39 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = "0.8.10" // 최신 JaCoCo 버전을 지정
+}
+
+tasks.jacocoTestReport {
+    dependsOn test // 테스트 실행 후 커버리지 리포트 생성
+
+    reports {
+        xml.required.set(true) // XML 리포트 생성
+        csv.required.set(false) // CSV 리포트는 비활성화
+        html.required.set(true) // HTML 리포트 생성
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml")) // HTML 리포트 경로 설정
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn test
+
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8 // 전체 커버리지가 80% 미만일 경우 실패
+            }
+        }
+        rule {
+            enabled = true
+            element = 'CLASS'
+            includes = ['com.sparta.*'] // 특정 패키지에 대해 커버리지 적용
+            limit {
+                minimum = 0.9 // 클래스별 90% 이상 커버리지 요구
+            }
+        }
+    }
 }
