@@ -59,6 +59,11 @@ class ReservationServiceTest {
         endAt = startAt.plusDays(1);
     }
 
+    // 공통 데이터 생성 메서드
+    private Reservation createTestReservation(ReservationStatus status) {
+        return new Reservation(testItem, testUser, status, startAt, endAt);
+    }
+
     @Nested
     @DisplayName("예약 생성 테스트")
     class CreateReservationTests {
@@ -69,10 +74,8 @@ class ReservationServiceTest {
             Long itemId = 1L;
             Long userId = 1L;
 
-            List<Reservation> emptyReservations = new ArrayList<>();
-            Reservation expectedReservation = new Reservation(testItem, testUser, ReservationStatus.PENDING, startAt, endAt);
-
-            when(reservationRepository.findConflictingReservations(itemId, startAt, endAt)).thenReturn(emptyReservations);
+            Reservation expectedReservation = createTestReservation(ReservationStatus.PENDING);
+            when(reservationRepository.findConflictingReservations(itemId, startAt, endAt)).thenReturn(Collections.emptyList());
             when(itemRepository.findByIdOrElseThrow(itemId)).thenReturn(testItem);
             when(userRepository.findByIdOrElseThrow(userId)).thenReturn(testUser);
             when(reservationRepository.save(any(Reservation.class))).thenReturn(expectedReservation);
@@ -97,10 +100,9 @@ class ReservationServiceTest {
             // given
             Long itemId = 1L;
             Long userId = 1L;
-            Reservation existingReservation = new Reservation(testItem, testUser, ReservationStatus.PENDING, startAt, endAt);
-            List<Reservation> conflictingReservations = Collections.singletonList(existingReservation);
-
-            when(reservationRepository.findConflictingReservations(itemId, startAt, endAt)).thenReturn(conflictingReservations);
+            Reservation conflictingReservation = createTestReservation(ReservationStatus.PENDING);
+            when(reservationRepository.findConflictingReservations(itemId, startAt, endAt))
+                .thenReturn(Collections.singletonList(conflictingReservation));
 
             // when, then
             assertThrows(ReservationConflictException.class, () ->
@@ -117,7 +119,7 @@ class ReservationServiceTest {
         void updateReservationStatusToPending() {
             // given
             Long reservationId = 1L;
-            Reservation pendingReservation = new Reservation(testItem, testUser, ReservationStatus.PENDING, startAt, endAt);
+            Reservation pendingReservation = createTestReservation(ReservationStatus.PENDING);
 
             when(reservationRepository.findByIdOrElseThrow(reservationId)).thenReturn(pendingReservation);
             when(reservationRepository.save(pendingReservation)).thenReturn(pendingReservation);
@@ -138,8 +140,7 @@ class ReservationServiceTest {
         void updateReservationStatusWithInvalidTransition() {
             // given
             Long reservationId = 1L;
-            Reservation approvedReservation = new Reservation(testItem, testUser, ReservationStatus.APPROVED, startAt, endAt);
-
+            Reservation approvedReservation = createTestReservation(ReservationStatus.APPROVED);
             when(reservationRepository.findByIdOrElseThrow(reservationId)).thenReturn(approvedReservation);
 
             // when, then
@@ -156,10 +157,7 @@ class ReservationServiceTest {
         @DisplayName("전체 예약 목록 조회")
         void getReservationsSuccess() {
             // given
-            List<Reservation> reservations = List.of(
-                new Reservation(testItem, testUser, ReservationStatus.PENDING, startAt, endAt)
-            );
-
+            List<Reservation> reservations = List.of(createTestReservation(ReservationStatus.PENDING));
             when(reservationRepository.findAllWithUserAndItem()).thenReturn(reservations);
 
             // when
@@ -179,10 +177,7 @@ class ReservationServiceTest {
             // given
             Long itemId = 1L;
             Long userId = 1L;
-            List<Reservation> reservations = List.of(
-                new Reservation(testItem, testUser, ReservationStatus.PENDING, startAt, endAt)
-            );
-
+            List<Reservation> reservations = List.of(createTestReservation(ReservationStatus.PENDING));
             when(searchReservationsQueryRepository.searchReservations(userId, itemId)).thenReturn(reservations);
 
             // when

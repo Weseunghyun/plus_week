@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.example.demo.repository.ItemRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,7 +17,6 @@ class ItemTestWithMock {
     private ItemRepository itemRepository;
 
     @Test
-    @DisplayName("status nullable = false 적용되는지 확인!!!")
     void statusNullableCheck() {
         //given
         User owner = new User();

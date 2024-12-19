@@ -8,7 +8,8 @@ import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
-@DynamicInsert
+//nullable = false 테스트 코드 실행을 위해 주석처리
+//@DynamicInsert
 // TODO: 6. Dynamic Insert
 public class Item {
     @Id

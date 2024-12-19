@@ -19,8 +19,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     // TODO: 2. 인가에 대한 이해
-    private static final String[] AUTH_REQUIRED_PATH_PATTERNS = {"/users/logout", "/admins/*", "/items/*"};
-    private static final String[] USER_ROLE_REQUIRED_PATH_PATTERNS = {"/admins/*"};
+    private static final String[] AUTH_REQUIRED_PATH_PATTERNS = {"/users/logout", "/admins/*", "/items/*", "/reservations/*"};
+    private static final String[] ADMIN_ROLE_REQUIRED_PATH_PATTERNS = {"/admins/*"};
 
     private final AuthInterceptor authInterceptor;
     private final UserRoleInterceptor userRoleInterceptor;
@@ -32,7 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .order(Ordered.HIGHEST_PRECEDENCE);
 
         registry.addInterceptor(userRoleInterceptor)
-                .addPathPatterns(USER_ROLE_REQUIRED_PATH_PATTERNS)
+                .addPathPatterns(ADMIN_ROLE_REQUIRED_PATH_PATTERNS)
                 .order(Ordered.HIGHEST_PRECEDENCE + 2);
     }
 
@@ -50,7 +50,7 @@ public class WebConfig implements WebMvcConfigurer {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new RoleFilter(Role.ADMIN));
         filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 2);
-        filterRegistrationBean.addUrlPatterns(USER_ROLE_REQUIRED_PATH_PATTERNS);
+        filterRegistrationBean.addUrlPatterns(ADMIN_ROLE_REQUIRED_PATH_PATTERNS);
         return filterRegistrationBean;
     }
 }
